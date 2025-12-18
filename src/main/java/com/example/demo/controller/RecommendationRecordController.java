@@ -15,7 +15,7 @@ import com.example.demo.service.RecommendationRecordService;
 public class RecommendationRecordController {
     @Autowired
     RecommendationRecordService rs;
-    @GetMapping("/user/{userId}")
+    @GetMapping("/usern/{userId}")
     public Optional<RecommendationRecordEntity> getid(@PathVariable Long re){
         return rs.getRecommendationById(re);
     }
