@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.entity.RecommendationRecordEntity;
+import com.example.demo.entity.RecommendationRecord;
 import com.example.demo.repository.RecommendationRecordRepository;
 
 @Service
@@ -14,13 +14,13 @@ public class RecommendationEngineServiceImpl implements RecommendationEngineServ
     @Autowired
     RecommendationRecordRepository rr;
     @Override
-    public Optional<RecommendationRecordEntity> getRecommendationById(Long id){
+    public Optional<RecommendationRecord> getRecommendationById(Long id){
         return rr.findById(id);
     }
-    public Optional<RecommendationRecordEntity> getRecommendationByUser(Long userid){
+    public Optional<RecommendationRecord> getRecommendationByUser(Long userid){
         return rr.findById(userid);
     }
-    public List<RecommendationRecordEntity> getRecommendations(){
+    public List<RecommendationRecord> getRecommendations(){
         return rr.findAll();
     }
 }

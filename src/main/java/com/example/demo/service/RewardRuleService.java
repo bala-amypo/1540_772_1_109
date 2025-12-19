@@ -5,11 +5,11 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.entity.RewardRuleEntity;
+import com.example.demo.entity.RewardRule;
 
 @Service
 public interface RewardRuleService {
-    RewardRuleEntity createRule(RewardRuleEntity rewardrule);
-    Optional<RewardRuleEntity> getRulesByCard(Long cardId);
-    List<RewardRuleEntity> getAllRules();
+    RewardRule createRule(RewardRule rewardrule);
+    Optional<RewardRule> getRulesByCard(Long cardId);
+    List<RewardRule> getAllRules();
 }

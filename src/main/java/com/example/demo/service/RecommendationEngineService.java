@@ -5,11 +5,11 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.entity.RecommendationRecordEntity;
+import com.example.demo.entity.RecommendationRecord;
 
 @Service
 public interface RecommendationEngineService {
-    Optional<RecommendationRecordEntity> getRecommendationById(Long id);
-    Optional<RecommendationRecordEntity> getRecommendationByUser(Long userid);
-    List<RecommendationRecordEntity> getRecommendations();
+    Optional<RecommendationRecord> getRecommendationById(Long id);
+    Optional<RecommendationRecord> getRecommendationByUser(Long userid);
+    List<RecommendationRecord> getRecommendations();
 }
