@@ -10,7 +10,7 @@ import com.example.demo.entity.RecommendationRecordEntity;
 import com.example.demo.repository.RecommendationRecordRepository;
 
 @Service
-public class RecommendationRecordServiceImpl implements RecommendationRecordService{
+public class RecommendationEngineServiceImpl implements RecommendationRecordService{
     @Autowired
     RecommendationRecordRepository rr;
     @Override

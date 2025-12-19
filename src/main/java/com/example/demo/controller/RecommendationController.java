@@ -12,7 +12,7 @@ import com.example.demo.entity.RecommendationRecordEntity;
 import com.example.demo.service.RecommendationRecordService;
 
 @RestController
-public class RecommendationRecordController {
+public class RecommendationController {
     @Autowired
     RecommendationRecordService rs;
     @GetMapping("/usern/{userId}")
