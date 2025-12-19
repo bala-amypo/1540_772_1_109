@@ -10,7 +10,7 @@ import com.example.demo.entity.PurchaseIntentRecordEntity;
 import com.example.demo.repository.PurchaseIntentRecordRepository;
 
 @Service
-public class PurchaseIntentServiceImpl implements PurchaseIntentRecordService{
+public class PurchaseIntentServiceImpl implements PurchaseIntentService{
     @Autowired
     PurchaseIntentRecordRepository pr;
     @Override
