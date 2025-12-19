@@ -5,22 +5,20 @@ import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserProfileRepository;
 import com.example.demo.service.UserProfileService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class UserProfileServiceImpl implements UserProfileService {
 
-    private final UserProfileRepository userProfileRepository;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserProfileRepository userProfileRepository;
 
-    public UserProfileServiceImpl(
-            UserProfileRepository userProfileRepository,
-            PasswordEncoder passwordEncoder
-    ) {
-        this.userProfileRepository = userProfileRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserProfile createUser(UserProfile profile) {
