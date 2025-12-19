@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.RecommendationRecordEntity;
-import com.example.demo.service.RecommendationRecordService;
+import com.example.demo.service.RecommendationEngineService;
 
 @RestController
 public class RecommendationController {
     @Autowired
-    RecommendationRecordService rs;
+    RecommendationEngineService rs;
     @GetMapping("/usern/{userId}")
     public Optional<RecommendationRecordEntity> getid(@PathVariable Long re){
         return rs.getRecommendationById(re);

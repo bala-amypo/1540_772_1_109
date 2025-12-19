@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.PurchaseIntentRecordEntity;
-import com.example.demo.service.PurchaseIntentRecordService;
+import com.example.demo.service.PurchaseIntentService;
 
 @RestController
 public class PurchaseIntentController {
     @Autowired
-    PurchaseIntentRecordService ps;
+    PurchaseIntentService ps;
     @PostMapping("/rewardrule")
     public PurchaseIntentRecordEntity create(@RequestBody PurchaseIntentRecordEntity pe){
         return ps.createIntent(pe);
