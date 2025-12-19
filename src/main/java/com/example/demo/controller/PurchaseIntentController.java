@@ -14,7 +14,7 @@ import com.example.demo.entity.PurchaseIntentRecordEntity;
 import com.example.demo.service.PurchaseIntentRecordService;
 
 @RestController
-public class PurchaseIntentRecordController {
+public class PurchaseIntentController {
     @Autowired
     PurchaseIntentRecordService ps;
     @PostMapping("/rewardrule")
