@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class RewardRuleEntity {
+public class RewardRule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -51,7 +51,7 @@ public class RewardRuleEntity {
     public void setActive(Boolean active) {
         this.active = active;
     }
-    public RewardRuleEntity(Long id, Long cardId, String category, String rewardType, Double multiplier, Boolean active) {
+    public RewardRule(Long id, Long cardId, String category, String rewardType, Double multiplier, Boolean active) {
         this.id = id;
         this.cardId = cardId;
         this.category = category;
@@ -59,6 +59,6 @@ public class RewardRuleEntity {
         this.multiplier = multiplier;
         this.active = active;
     }
-    public RewardRuleEntity() {
+    public RewardRule() {
     }
 }

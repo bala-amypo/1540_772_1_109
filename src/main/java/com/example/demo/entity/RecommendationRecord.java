@@ -8,7 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class RecommendationRecordEntity {
+public class RecommendationRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -60,9 +60,9 @@ public class RecommendationRecordEntity {
     public void setRecommendedAt(LocalDateTime recommendedAt) {
         this.recommendedAt = recommendedAt;
     }
-    public RecommendationRecordEntity() {
+    public RecommendationRecord() {
     }
-    public RecommendationRecordEntity(Long id, Long userid, Long purchaseIntentId, Long recommendedCardId,
+    public RecommendationRecord(Long id, Long userid, Long purchaseIntentId, Long recommendedCardId,
             Double expectedRewardValue, String calculationDetailsJson, LocalDateTime recommendedAt) {
         this.id = id;
         this.userid = userid;
