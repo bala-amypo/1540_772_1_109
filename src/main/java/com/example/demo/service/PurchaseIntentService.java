@@ -5,12 +5,12 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.entity.PurchaseIntentRecordEntity;
+import com.example.demo.entity.PurchaseIntentRecord;
 
 @Service
 public interface  PurchaseIntentService{
-    PurchaseIntentRecordEntity createIntent(PurchaseIntentRecordEntity pe);
-    Optional<PurchaseIntentRecordEntity> getIntentByUser(Long userId);
-    Optional<PurchaseIntentRecordEntity> getIntentById(Long id);
-    List<PurchaseIntentRecordEntity> getAllIntents();
+    PurchaseIntentRecord createIntent(PurchaseIntentRecord pe);
+    Optional<PurchaseIntentRecord> getIntentByUser(Long userId);
+    Optional<PurchaseIntentRecord> getIntentById(Long id);
+    List<PurchaseIntentRecord> getAllIntents();
 }

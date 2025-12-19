@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.entity.PurchaseIntentRecordEntity;
+import com.example.demo.entity.PurchaseIntentRecord;
 import com.example.demo.repository.PurchaseIntentRecordRepository;
 
 @Service
@@ -14,19 +14,19 @@ public class PurchaseIntentServiceImpl implements PurchaseIntentService{
     @Autowired
     PurchaseIntentRecordRepository pr;
     @Override
-    public PurchaseIntentRecordEntity createIntent(PurchaseIntentRecordEntity pe){
+    public PurchaseIntentRecord createIntent(PurchaseIntentRecord pe){
         return pr.save(pe);
     }
     @Override
-    public Optional<PurchaseIntentRecordEntity> getIntentByUser(Long userId){
+    public Optional<PurchaseIntentRecord> getIntentByUser(Long userId){
         return pr.findById(userId);
     }
     @Override
-    public Optional<PurchaseIntentRecordEntity> getIntentById(Long id){
+    public Optional<PurchaseIntentRecord> getIntentById(Long id){
         return pr.findById(id);
     }
     @Override
-    public List<PurchaseIntentRecordEntity> getAllIntents(){
+    public List<PurchaseIntentRecord> getAllIntents(){
         return pr.findAll();
     }
 }

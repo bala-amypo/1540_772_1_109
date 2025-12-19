@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.entity.PurchaseIntentRecordEntity;
+import com.example.demo.entity.PurchaseIntentRecord;
 import com.example.demo.service.PurchaseIntentService;
 
 @RestController
@@ -18,19 +18,19 @@ public class PurchaseIntentController {
     @Autowired
     PurchaseIntentService ps;
     @PostMapping("/rewardrule")
-    public PurchaseIntentRecordEntity create(@RequestBody PurchaseIntentRecordEntity pe){
+    public PurchaseIntentRecord create(@RequestBody PurchaseIntentRecord pe){
         return ps.createIntent(pe);
     }
     @GetMapping("/user/{userId}")
-    public Optional<PurchaseIntentRecordEntity> get(@PathVariable Long re){
+    public Optional<PurchaseIntentRecord> get(@PathVariable Long re){
         return ps.getIntentByUser(re);
     }
     @GetMapping("/Id/{id}")
-    public Optional<PurchaseIntentRecordEntity> getid(@PathVariable Long re){
+    public Optional<PurchaseIntentRecord> getid(@PathVariable Long re){
         return ps.getIntentById(re);
     }
     @GetMapping("/all")
-    public List<PurchaseIntentRecordEntity> getall(){
+    public List<PurchaseIntentRecord> getall(){
         return ps.getAllIntents();
     }
 }
