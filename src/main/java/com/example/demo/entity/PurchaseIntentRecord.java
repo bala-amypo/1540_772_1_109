@@ -8,7 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class PurchaseIntentRecordEntity {
+public class PurchaseIntentRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -53,9 +53,9 @@ public class PurchaseIntentRecordEntity {
     public void setIntentDate(LocalDateTime intentDate) {
         IntentDate = intentDate;
     }
-    public PurchaseIntentRecordEntity() {
+    public PurchaseIntentRecord() {
     }
-    public PurchaseIntentRecordEntity(Long id, Long userId, Double amount, String category, String merchant,
+    public PurchaseIntentRecord(Long id, Long userId, Double amount, String category, String merchant,
             LocalDateTime intentDate) {
         this.id = id;
         this.userId = userId;
