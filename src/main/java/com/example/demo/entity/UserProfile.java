@@ -51,7 +51,6 @@ public class UserProfile {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    /* Optional relationship as per spec */
     @ManyToMany
     @JoinTable(
         name = "user_favourite_cards",
@@ -65,9 +64,9 @@ public class UserProfile {
         this.createdAt = LocalDateTime.now();
     }
 
-    /* Getters and Setters */
 
-    public Long getId() { return id; }
+    public Long getId() {
+         return id; }
     public void setId(Long id) { this.id = id; }
 
     public String getUserId() { return userId; }
