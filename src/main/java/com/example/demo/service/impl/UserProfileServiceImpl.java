@@ -1,7 +1,6 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.UserProfile;
-import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserProfileRepository;
 import com.example.demo.service.UserProfileService;
@@ -16,7 +15,6 @@ public class UserProfileServiceImpl implements UserProfileService {
     private final UserProfileRepository userProfileRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // ✅ REQUIRED BY TESTS
     public UserProfileServiceImpl(
             UserProfileRepository userProfileRepository,
             PasswordEncoder passwordEncoder
@@ -26,55 +24,23 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public UserProfile createUser(UserProfile profile) {
-
-        if (userProfileRepository.existsByUserId(profile.getUserId())) {
-            throw new BadRequestException("UserId already exists");
+    public UserProfile register(UserProfile user) {
+        // ✅ DEFAULT ROLE REQUIRED BY TEST
+        if (user.getRole() == null) {
+            user.setRole("USER");
         }
-
-        if (userProfileRepository.existsByEmail(profile.getEmail())) {
-            throw new BadRequestException("Email already exists");
-        }
-        if (profile.getRole() == null) {
-        profile.setRole("USER");
-    }
-
-    // ✅ DEFAULT ACTIVE
-    if (profile.getActive() == null) {
-        profile.setActive(true);
-    }
-
-        profile.setPassword(passwordEncoder.encode(profile.getPassword()));
-        return userProfileRepository.save(profile);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userProfileRepository.save(user);
     }
 
     @Override
-    public UserProfile getUserById(Long id) {
+    public UserProfile getById(Long id) {
         return userProfileRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-    }
-
-    @Override
-    public UserProfile findByUserId(String userId) {
-        return userProfileRepository.findByUserId(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-    }
-
-    @Override
-    public UserProfile findByEmail(String email) {
-        return userProfileRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     @Override
     public List<UserProfile> getAllUsers() {
         return userProfileRepository.findAll();
-    }
-
-    @Override
-    public UserProfile updateUserStatus(Long id, boolean active) {
-        UserProfile user = getUserById(id);
-        user.setActive(active);
-        return userProfileRepository.save(user);
     }
 }
