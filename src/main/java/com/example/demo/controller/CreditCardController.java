@@ -15,6 +15,10 @@ import java.util.List;
 public class CreditCardController {
 
     private CreditCardService creditCardService;
+    // ✅ REQUIRED BY TESTS
+public CreditCardController(CreditCardService creditCardService) {
+    this.creditCardService = creditCardService;
+}
 
     public CreditCardController() {}
 

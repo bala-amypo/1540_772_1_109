@@ -14,6 +14,11 @@ import java.util.List;
 public class UserProfileController {
 
     private UserProfileService userProfileService;
+    // ✅ REQUIRED BY TESTS
+public UserProfileController(UserProfileService userProfileService) {
+    this.userProfileService = userProfileService;
+}
+
 
     // ✅ REQUIRED BY TESTS
     public UserProfileController() {}

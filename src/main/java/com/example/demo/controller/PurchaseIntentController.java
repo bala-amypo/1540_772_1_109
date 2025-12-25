@@ -15,6 +15,10 @@ import java.util.List;
 public class PurchaseIntentController {
 
     private PurchaseIntentService purchaseIntentService;
+    // ✅ REQUIRED BY TESTS
+public PurchaseIntentController(PurchaseIntentService purchaseIntentService) {
+    this.purchaseIntentService = purchaseIntentService;
+}
 
     public PurchaseIntentController() {}
 

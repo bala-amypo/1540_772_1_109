@@ -14,6 +14,10 @@ import java.util.List;
 public class RewardRuleServiceImpl implements RewardRuleService {
 
     private RewardRuleRepository repo;
+    public RewardRuleServiceImpl(RewardRuleRepository repository) {
+    this.rewardRuleRepository = repository;
+}
+
 
     public RewardRuleServiceImpl() {}
 

@@ -14,6 +14,10 @@ import java.util.List;
 public class PurchaseIntentServiceImpl implements PurchaseIntentService {
 
     private PurchaseIntentRecordRepository repo;
+    public PurchaseIntentServiceImpl(PurchaseIntentRecordRepository repository) {
+    this.purchaseIntentRecordRepository = repository;
+}
+
 
     public PurchaseIntentServiceImpl() {}
 

@@ -15,6 +15,11 @@ import java.util.List;
 public class RewardRuleController {
 
     private RewardRuleService rewardRuleService;
+    // ✅ REQUIRED BY TESTS
+public RewardRuleController(RewardRuleService rewardRuleService) {
+    this.rewardRuleService = rewardRuleService;
+}
+
 
     public RewardRuleController() {}
 
