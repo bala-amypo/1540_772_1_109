@@ -39,6 +39,12 @@ public class CreditCardServiceImpl implements CreditCardService {
                 .orElseThrow(() -> new ResourceNotFoundException("Card not found"));
     }
 
+    // ✅ REQUIRED BY INTERFACE
+    @Override
+    public List<CreditCardRecord> getAllCards() {
+        return repository.findAll();
+    }
+
     @Override
     public List<CreditCardRecord> getCardsByUser(Long userId) {
         return repository.findByUserId(userId);

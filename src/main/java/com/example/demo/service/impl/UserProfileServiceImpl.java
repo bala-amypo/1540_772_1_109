@@ -27,7 +27,7 @@ public class UserProfileServiceImpl implements UserProfileService {
         return repository.save(user);
     }
 
-    // 🔴 REQUIRED BY INTERFACE
+    // ✅ REQUIRED (String, NOT Long)
     @Override
     public UserProfile findByUserId(String userId) {
         return repository.findByUserId(userId)
