@@ -28,8 +28,7 @@ public class CreditCardServiceImpl implements CreditCardService {
     @Override
     public CreditCardRecord updateCard(Long id, CreditCardRecord card) {
         CreditCardRecord existing = repository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Card not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Card not found"));
 
         existing.setCardName(card.getCardName());
         existing.setIssuer(card.getIssuer());
@@ -41,8 +40,7 @@ public class CreditCardServiceImpl implements CreditCardService {
     @Override
     public CreditCardRecord getCardById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Card not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Card not found"));
     }
 
     @Override
@@ -53,5 +51,10 @@ public class CreditCardServiceImpl implements CreditCardService {
     @Override
     public List<CreditCardRecord> getActiveCardsByUser(Long userId) {
         return repository.findActiveCardsByUser(userId);
+    }
+
+    @Override
+    public List<CreditCardRecord> getAllCards() {
+        return repository.findAll();
     }
 }
