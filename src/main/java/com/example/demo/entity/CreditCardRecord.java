@@ -51,10 +51,9 @@ public class CreditCardRecord {
     private Set<UserProfile> users = new HashSet<>();
 
     @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+    public void prePersist() {
+       this.createdAt = LocalDateTime.now();
     }
-
     /* Getters and Setters */
 
     public Long getId() { return id; }

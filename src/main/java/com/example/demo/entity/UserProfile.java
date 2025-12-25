@@ -60,11 +60,9 @@ public class UserProfile {
     private Set<CreditCardRecord> favouriteCards = new HashSet<>();
 
     @PrePersist
-    protected void onCreate() {
+    public void prePersist() {
         this.createdAt = LocalDateTime.now();
     }
-
-
     public Long getId() {
          return id; 
          }
