@@ -27,9 +27,10 @@ public class UserProfileServiceImpl implements UserProfileService {
         return repository.save(user);
     }
 
+    // 🔴 REQUIRED BY INTERFACE
     @Override
-    public UserProfile getUserById(Long id) {
-        return repository.findById(id)
+    public UserProfile findByUserId(String userId) {
+        return repository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
@@ -37,6 +38,14 @@ public class UserProfileServiceImpl implements UserProfileService {
     public UserProfile findByEmail(String email) {
         return repository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    @Override
+    public UserProfile updateUserStatus(Long userId, boolean active) {
+        UserProfile user = repository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        user.setActive(active);
+        return repository.save(user);
     }
 
     @Override

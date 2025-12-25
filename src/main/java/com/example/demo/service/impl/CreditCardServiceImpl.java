@@ -18,10 +18,7 @@ public class CreditCardServiceImpl implements CreditCardService {
     }
 
     @Override
-    public CreditCardRecord createCard(CreditCardRecord card) {
-        if (card.getIsActive() == null) {
-            card.setIsActive(true);
-        }
+    public CreditCardRecord addCard(CreditCardRecord card) {
         return repository.save(card);
     }
 
@@ -32,7 +29,6 @@ public class CreditCardServiceImpl implements CreditCardService {
 
         existing.setCardName(card.getCardName());
         existing.setIssuer(card.getIssuer());
-        existing.setIsActive(card.getIsActive());
 
         return repository.save(existing);
     }
