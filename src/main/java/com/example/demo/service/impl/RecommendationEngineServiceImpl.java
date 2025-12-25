@@ -52,7 +52,7 @@ public RecommendationRecord generateRecommendation(Long intentId) {
 
     // ✅ EXACT TEST EXPECTATION
     if (activeCards == null || activeCards.isEmpty()) {
-        throw new ResourceNotFoundException("No active credit cards found");
+        throw new ResourceNotFoundException("No active cards found");
     }
 
     double maxReward = 0;

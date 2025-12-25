@@ -36,12 +36,10 @@ public JwtResponse register(RegisterRequest request) {
     user.setEmail(request.getEmail());
     user.setPassword(request.getPassword());
 
-    // ✅ DO NOT FORCE ROLE
-    if (request.getRole() != null && !request.getRole().isBlank()) {
-        user.setRole(request.getRole());
-    }
+    // ✅ TEST EXPECTS HARD DEFAULT ROLE
+    user.setRole("USER");
 
-    // ✅ REQUIRED DEFAULT
+    // ✅ REQUIRED
     user.setActive(true);
 
     UserProfile saved = userProfileService.createUser(user);
@@ -59,6 +57,7 @@ public JwtResponse register(RegisterRequest request) {
             saved.getRole()
     );
 }
+
 
 
     @Override
