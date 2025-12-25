@@ -3,13 +3,10 @@ package com.example.demo.controller;
 import com.example.demo.dto.JwtResponse;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegisterRequest;
-import com.example.demo.repository.UserProfileRepository;
-import com.example.demo.security.JwtUtil;
 import com.example.demo.service.AuthService;
-import com.example.demo.service.UserProfileService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,33 +15,30 @@ public class AuthController {
 
     private final AuthService authService;
 
-    // ✅ REQUIRED BY TESTS
-    public AuthController(
-            UserProfileService userProfileService,
-            UserProfileRepository userProfileRepository,
-            AuthenticationManager authenticationManager,
-            JwtUtil jwtUtil
-    ) {
-        this.authService = new com.example.demo.service.impl.AuthServiceImpl(
-                userProfileService,
-                userProfileRepository,
-                authenticationManager,
-                jwtUtil
-        );
-    }
-
-    // ✅ REQUIRED BY SPRING
+    // ✅ REQUIRED CONSTRUCTOR (VERY IMPORTANT)
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
+    /**
+     * POST /auth/register
+     */
     @PostMapping("/register")
-    public ResponseEntity<JwtResponse> register(@RequestBody RegisterRequest request) {
-        return new ResponseEntity<>(authService.register(request), HttpStatus.CREATED);
+    public ResponseEntity<JwtResponse> register(
+            @Valid @RequestBody RegisterRequest request
+    ) {
+        JwtResponse response = authService.register(request);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    /**
+     * POST /auth/login
+     */
     @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(@RequestBody LoginRequest request) {
-        return ResponseEntity.ok(authService.login(request));
+    public ResponseEntity<JwtResponse> login(
+            @Valid @RequestBody LoginRequest request
+    ) {
+        JwtResponse response = authService.login(request);
+        return ResponseEntity.ok(response);
     }
 }
