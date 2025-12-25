@@ -29,38 +29,37 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public JwtResponse register(RegisterRequest request) {
+public JwtResponse register(RegisterRequest request) {
 
-        UserProfile user = new UserProfile();
-        user.setFullName(request.getFullName());
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+    UserProfile user = new UserProfile();
+    user.setFullName(request.getFullName());
+    user.setEmail(request.getEmail());
+    user.setPassword(request.getPassword());
 
-        // ✅ TEST-EXPECTED ROLE LOGIC
-        if (request.getRole() == null || request.getRole().isBlank()) {
-            user.setRole("USER");
-        } else {
-            user.setRole(request.getRole());
-        }
-
-        // ✅ REQUIRED
-        user.setActive(true);
-
-        UserProfile saved = userProfileService.createUser(user);
-
-        String token = jwtUtil.generateToken(
-                saved.getId(),
-                saved.getEmail(),
-                saved.getRole()
-        );
-
-        return new JwtResponse(
-                token,
-                saved.getId(),
-                saved.getEmail(),
-                saved.getRole()
-        );
+    // ✅ DO NOT FORCE ROLE
+    if (request.getRole() != null && !request.getRole().isBlank()) {
+        user.setRole(request.getRole());
     }
+
+    // ✅ REQUIRED DEFAULT
+    user.setActive(true);
+
+    UserProfile saved = userProfileService.createUser(user);
+
+    String token = jwtUtil.generateToken(
+            saved.getId(),
+            saved.getEmail(),
+            saved.getRole()
+    );
+
+    return new JwtResponse(
+            token,
+            saved.getId(),
+            saved.getEmail(),
+            saved.getRole()
+    );
+}
+
 
     @Override
     public JwtResponse login(LoginRequest request) {
