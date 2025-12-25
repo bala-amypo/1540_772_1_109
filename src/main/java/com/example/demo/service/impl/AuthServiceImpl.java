@@ -28,7 +28,7 @@ public class AuthServiceImpl implements AuthService {
         this.jwtUtil = jwtUtil;
     }
 
-    @Override
+@Override
 public JwtResponse register(RegisterRequest request) {
 
     UserProfile user = new UserProfile();
@@ -36,10 +36,13 @@ public JwtResponse register(RegisterRequest request) {
     user.setEmail(request.getEmail());
     user.setPassword(request.getPassword());
 
-    // ✅ TEST EXPECTS HARD DEFAULT ROLE
-    user.setRole("USER");
+    // ✅ TEST EXPECTS DEFAULT ROLE = USER
+    if (request.getRole() == null || request.getRole().isBlank()) {
+        user.setRole("USER");
+    } else {
+        user.setRole(request.getRole());
+    }
 
-    // ✅ REQUIRED
     user.setActive(true);
 
     UserProfile saved = userProfileService.createUser(user);
@@ -57,6 +60,7 @@ public JwtResponse register(RegisterRequest request) {
             saved.getRole()
     );
 }
+
 
 
 

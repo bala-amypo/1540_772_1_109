@@ -54,7 +54,6 @@ public RecommendationRecord generateRecommendation(Long intentId) {
     if (activeCards == null || activeCards.isEmpty()) {
         throw new ResourceNotFoundException("No active cards found");
     }
-
     double maxReward = 0;
     Long bestCardId = null;
 
