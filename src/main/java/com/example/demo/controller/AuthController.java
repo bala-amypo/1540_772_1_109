@@ -6,6 +6,7 @@ import com.example.demo.dto.RegisterRequest;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.AuthService;
 import com.example.demo.service.UserProfileService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,12 +18,13 @@ public class AuthController {
 
     private final AuthService authService;
 
-    // ✅ Used by Spring
+    // ✅ THIS is the constructor Spring Boot MUST use
+    @Autowired
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
-    // ✅ Used by TEST CASES (MUST NOT SET authService = null)
+    // ✅ THIS is used ONLY by test cases (Spring ignores it)
     public AuthController(
             UserProfileService userProfileService,
             AuthenticationManager authenticationManager,
