@@ -1,7 +1,6 @@
 package com.example.demo.config;
 
 import com.example.demo.security.JwtAuthenticationFilter;
-import com.example.demo.security.JwtUtil;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,27 +29,19 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/auth/**",
-                    "/simple-status",
-                    "/swagger-ui/**",
-                    "/v3/api-docs/**"
+                        "/auth/**",
+                        "/simple-status",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**"
                 ).permitAll()
                 .requestMatchers("/api/**").authenticated()
             )
             .addFilterBefore(
-                jwtAuthenticationFilter,
-                UsernamePasswordAuthenticationFilter.class
+                    jwtAuthenticationFilter,
+                    UsernamePasswordAuthenticationFilter.class
             );
 
         return http.build();
-    }
-
-    @Bean
-    public JwtUtil jwtUtil() {
-        return new JwtUtil(
-                "credit-card-reward-secret".getBytes(),
-                3600000L
-        );
     }
 
     @Bean
