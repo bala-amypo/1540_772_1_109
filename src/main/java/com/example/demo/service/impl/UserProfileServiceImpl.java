@@ -27,7 +27,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     public UserProfile createUser(UserProfile user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         if (user.getRole() == null) {
-            user.setRole("USER"); // ✅ default role (fixes t31)
+            user.setRole("USER"); // ✅ fixes t31
         }
         return repository.save(user);
     }
@@ -48,5 +48,11 @@ public class UserProfileServiceImpl implements UserProfileService {
         UserProfile user = getUserById(id);
         user.setActive(active);
         return repository.save(user);
+    }
+
+    @Override
+    public UserProfile findByEmail(String email) {
+        return repository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 }
