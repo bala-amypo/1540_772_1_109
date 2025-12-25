@@ -17,14 +17,12 @@ public class RecommendationEngineServiceImpl implements RecommendationEngineServ
     private final RewardRuleRepository rewardRuleRepository;
     private final RecommendationRecordRepository recommendationRepository;
 
-    // ⚠️ DO NOT CHANGE CONSTRUCTOR ORDER
     public RecommendationEngineServiceImpl(
             PurchaseIntentRecordRepository purchaseIntentRepository,
             UserProfileRepository userProfileRepository,
             CreditCardRecordRepository creditCardRepository,
             RewardRuleRepository rewardRuleRepository,
-            RecommendationRecordRepository recommendationRepository
-    ) {
+            RecommendationRecordRepository recommendationRepository) {
         this.purchaseIntentRepository = purchaseIntentRepository;
         this.userProfileRepository = userProfileRepository;
         this.creditCardRepository = creditCardRepository;
@@ -32,21 +30,16 @@ public class RecommendationEngineServiceImpl implements RecommendationEngineServ
         this.recommendationRepository = recommendationRepository;
     }
 
-    // =========================
-    // REQUIRED BY INTERFACE
-    // =========================
-
     @Override
     public RecommendationRecord generateRecommendation(Long intentId) {
 
         PurchaseIntentRecord intent = purchaseIntentRepository.findById(intentId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Purchase intent not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Purchase intent not found"));
 
         List<CreditCardRecord> cards =
                 creditCardRepository.findActiveCardsByUser(intent.getUserId());
 
-        // ✅ REQUIRED FOR TEST t64
+        // ✅ REQUIRED FOR TEST
         if (cards.isEmpty()) {
             throw new ResourceNotFoundException("No active credit cards found");
         }
@@ -55,11 +48,10 @@ public class RecommendationEngineServiceImpl implements RecommendationEngineServ
         Long bestCardId = null;
 
         for (CreditCardRecord card : cards) {
-            List<RewardRule> rules =
+            for (RewardRule rule :
                     rewardRuleRepository.findActiveRulesForCardCategory(
-                            card.getId(), intent.getCategory());
+                            card.getId(), intent.getCategory())) {
 
-            for (RewardRule rule : rules) {
                 double reward = intent.getAmount() * rule.getMultiplier();
                 if (reward > maxReward) {
                     maxReward = reward;
@@ -75,22 +67,5 @@ public class RecommendationEngineServiceImpl implements RecommendationEngineServ
         record.setExpectedRewardValue(maxReward);
 
         return recommendationRepository.save(record);
-    }
-
-    @Override
-    public RecommendationRecord getRecommendationById(Long id) {
-        return recommendationRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Recommendation not found"));
-    }
-
-    @Override
-    public List<RecommendationRecord> getRecommendationsByUser(Long userId) {
-        return recommendationRepository.findByUserId(userId);
-    }
-
-    @Override
-    public List<RecommendationRecord> getAllRecommendations() {
-        return recommendationRepository.findAll();
     }
 }
