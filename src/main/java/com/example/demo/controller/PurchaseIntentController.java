@@ -2,8 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.PurchaseIntentRecord;
 import com.example.demo.service.PurchaseIntentService;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,21 +12,11 @@ import java.util.List;
 @RequestMapping("/api/intents")
 public class PurchaseIntentController {
 
-    private PurchaseIntentService purchaseIntentService;
+    private final PurchaseIntentService purchaseIntentService;
+
     // ✅ REQUIRED BY TESTS
-public PurchaseIntentController(PurchaseIntentService purchaseIntentService) {
-    this.purchaseIntentService = purchaseIntentService;
-}
-
-    public PurchaseIntentController() {}
-
-    public PurchaseIntentController(PurchaseIntentService service) {
-        this.purchaseIntentService = service;
-    }
-
-    @Autowired
-    public void setPurchaseIntentService(PurchaseIntentService service) {
-        this.purchaseIntentService = service;
+    public PurchaseIntentController(PurchaseIntentService purchaseIntentService) {
+        this.purchaseIntentService = purchaseIntentService;
     }
 
     @PostMapping
@@ -45,18 +33,12 @@ public PurchaseIntentController(PurchaseIntentService purchaseIntentService) {
     public ResponseEntity<List<PurchaseIntentRecord>> getIntentsByUser(
             @PathVariable Long userId
     ) {
-        return ResponseEntity.ok(
-                purchaseIntentService.getIntentsByUser(userId)
-        );
+        return ResponseEntity.ok(purchaseIntentService.getIntentsByUser(userId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PurchaseIntentRecord> getIntentById(
-            @PathVariable Long id
-    ) {
-        return ResponseEntity.ok(
-                purchaseIntentService.getIntentById(id)
-        );
+    public ResponseEntity<PurchaseIntentRecord> getIntentById(@PathVariable Long id) {
+        return ResponseEntity.ok(purchaseIntentService.getIntentById(id));
     }
 
     @GetMapping

@@ -2,8 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.RewardRule;
 import com.example.demo.service.RewardRuleService;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,30 +12,16 @@ import java.util.List;
 @RequestMapping("/api/reward-rules")
 public class RewardRuleController {
 
-    private RewardRuleService rewardRuleService;
+    private final RewardRuleService rewardRuleService;
+
     // ✅ REQUIRED BY TESTS
-public RewardRuleController(RewardRuleService rewardRuleService) {
-    this.rewardRuleService = rewardRuleService;
-}
-
-
-    public RewardRuleController() {}
-
-    public RewardRuleController(RewardRuleService service) {
-        this.rewardRuleService = service;
-    }
-
-    @Autowired
-    public void setRewardRuleService(RewardRuleService service) {
-        this.rewardRuleService = service;
+    public RewardRuleController(RewardRuleService rewardRuleService) {
+        this.rewardRuleService = rewardRuleService;
     }
 
     @PostMapping
     public ResponseEntity<RewardRule> createRule(@RequestBody RewardRule rule) {
-        return new ResponseEntity<>(
-                rewardRuleService.createRule(rule),
-                HttpStatus.CREATED
-        );
+        return new ResponseEntity<>(rewardRuleService.createRule(rule), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -49,12 +33,8 @@ public RewardRuleController(RewardRuleService rewardRuleService) {
     }
 
     @GetMapping("/card/{cardId}")
-    public ResponseEntity<List<RewardRule>> getRulesByCard(
-            @PathVariable Long cardId
-    ) {
-        return ResponseEntity.ok(
-                rewardRuleService.getRulesByCard(cardId)
-        );
+    public ResponseEntity<List<RewardRule>> getRulesByCard(@PathVariable Long cardId) {
+        return ResponseEntity.ok(rewardRuleService.getRulesByCard(cardId));
     }
 
     @GetMapping("/active")

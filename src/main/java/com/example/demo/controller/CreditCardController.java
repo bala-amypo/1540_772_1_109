@@ -2,8 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.CreditCardRecord;
 import com.example.demo.service.CreditCardService;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,31 +12,16 @@ import java.util.List;
 @RequestMapping("/api/cards")
 public class CreditCardController {
 
-    private CreditCardService creditCardService;
+    private final CreditCardService creditCardService;
+
     // ✅ REQUIRED BY TESTS
-public CreditCardController(CreditCardService creditCardService) {
-    this.creditCardService = creditCardService;
-}
-
-    public CreditCardController() {}
-
-    public CreditCardController(CreditCardService service) {
-        this.creditCardService = service;
-    }
-
-    @Autowired
-    public void setCreditCardService(CreditCardService service) {
-        this.creditCardService = service;
+    public CreditCardController(CreditCardService creditCardService) {
+        this.creditCardService = creditCardService;
     }
 
     @PostMapping
-    public ResponseEntity<CreditCardRecord> addCard(
-            @RequestBody CreditCardRecord card
-    ) {
-        return new ResponseEntity<>(
-                creditCardService.addCard(card),
-                HttpStatus.CREATED
-        );
+    public ResponseEntity<CreditCardRecord> addCard(@RequestBody CreditCardRecord card) {
+        return new ResponseEntity<>(creditCardService.addCard(card), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -50,12 +33,8 @@ public CreditCardController(CreditCardService creditCardService) {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<CreditCardRecord>> getCardsByUser(
-            @PathVariable Long userId
-    ) {
-        return ResponseEntity.ok(
-                creditCardService.getCardsByUser(userId)
-        );
+    public ResponseEntity<List<CreditCardRecord>> getCardsByUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(creditCardService.getCardsByUser(userId));
     }
 
     @GetMapping("/{id}")
