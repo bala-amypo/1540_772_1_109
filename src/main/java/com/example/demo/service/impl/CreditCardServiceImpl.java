@@ -11,46 +11,45 @@ import java.util.List;
 @Service
 public class CreditCardServiceImpl implements CreditCardService {
 
-    private final CreditCardRecordRepository creditCardRepository;
+    private final CreditCardRecordRepository repository;
 
-    public CreditCardServiceImpl(CreditCardRecordRepository creditCardRepository) {
-        this.creditCardRepository = creditCardRepository;
+    public CreditCardServiceImpl(CreditCardRecordRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public CreditCardRecord addCreditCard(CreditCardRecord card) {
-        // ✅ REQUIRED BY TEST
-        if (card.getActiveFlag() == null) {
-            card.setActiveFlag(true);
+    public CreditCardRecord addCard(CreditCardRecord card) {
+        if (card.getIsActive() == null) {
+            card.setIsActive(true); // ✅ default active
         }
-        return creditCardRepository.save(card);
+        return repository.save(card);
     }
 
     @Override
-    public CreditCardRecord updateCreditCard(Long id, CreditCardRecord updated) {
-        CreditCardRecord existing = creditCardRepository.findById(id)
+    public CreditCardRecord updateCard(Long id, CreditCardRecord card) {
+        CreditCardRecord existing = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Card not found"));
 
-        existing.setCardName(updated.getCardName());
-        existing.setAnnualFee(updated.getAnnualFee());
-        existing.setActiveFlag(updated.getActiveFlag());
+        existing.setCardName(card.getCardName());
+        existing.setIssuer(card.getIssuer());
+        existing.setIsActive(card.getIsActive());
 
-        return creditCardRepository.save(existing);
+        return repository.save(existing);
     }
 
     @Override
-    public CreditCardRecord getById(Long id) {
-        return creditCardRepository.findById(id)
+    public CreditCardRecord getCardById(Long id) {
+        return repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Card not found"));
     }
 
     @Override
     public List<CreditCardRecord> getCardsByUser(Long userId) {
-        return creditCardRepository.findByUserId(userId);
+        return repository.findByUserId(userId);
     }
 
     @Override
     public List<CreditCardRecord> getAllCards() {
-        return creditCardRepository.findAll();
+        return repository.findAll();
     }
 }
