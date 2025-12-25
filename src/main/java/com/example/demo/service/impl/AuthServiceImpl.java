@@ -8,30 +8,29 @@ import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.UserProfileRepository;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.AuthService;
-import com.example.demo.service.UserProfileService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    private final UserProfileService userProfileService;
     private final UserProfileRepository userProfileRepository;
+    private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
-    // EXACT constructor order as per spec
-    @Autowired
+    // ⚠️ DO NOT CHANGE CONSTRUCTOR ORDER
     public AuthServiceImpl(
-            UserProfileService userProfileService,
             UserProfileRepository userProfileRepository,
+            PasswordEncoder passwordEncoder,
             AuthenticationManager authenticationManager,
             JwtUtil jwtUtil
     ) {
-        this.userProfileService = userProfileService;
         this.userProfileRepository = userProfileRepository;
+        this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
     }
@@ -39,44 +38,66 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public JwtResponse register(RegisterRequest request) {
 
-    UserProfile user = new UserProfile();
-    user.setUserId(request.getUserId());
-    user.setEmail(request.getEmail());
-    user.setPassword(request.getPassword());
-    user.setFullName(request.getFullName());
+        if (userProfileRepository.existsByEmail(request.getEmail())) {
+            throw new BadRequestException("Email already exists");
+        }
 
-    // ✅ REQUIRED defaults
-    user.setRole("USER");
-    user.setActive(true);
+        UserProfile user = new UserProfile();
+        user.setUserId(request.getUserId());
+        user.setFullName(request.getFullName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-    UserProfile saved = userProfileService.createUser(user);
+        // ✅ DEFAULT ROLE REQUIRED BY TEST
+        user.setRole("USER");
+        user.setActive(true);
 
-    String token = jwtUtil.generateToken(
-            saved.getId(),
-            saved.getEmail(),
-            saved.getRole()
-    );
+        UserProfile savedUser = userProfileRepository.save(user);
 
-    return new JwtResponse(token);
-}
+        String token = jwtUtil.generateToken(
+                savedUser.getId(),
+                savedUser.getEmail(),
+                savedUser.getRole()
+        );
 
-
-   @Override
-public JwtResponse login(LoginRequest request) {
-
-    UserProfile user = userProfileService.findByEmail(request.getEmail());
-
-    if (!user.getActive()) {
-        throw new BadRequestException("User is inactive");
+        // ✅ REQUIRED 4-ARG CONSTRUCTOR
+        return new JwtResponse(
+                token,
+                savedUser.getId(),
+                savedUser.getEmail(),
+                savedUser.getRole()
+        );
     }
 
-    String token = jwtUtil.generateToken(
-            user.getId(),
-            user.getEmail(),
-            user.getRole()
-    );
+    @Override
+    public JwtResponse login(LoginRequest request) {
 
-    return new JwtResponse(token);
-}
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
 
+        UserProfile user = userProfileRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new BadRequestException("Invalid credentials"));
+
+        if (!Boolean.TRUE.equals(user.getActive())) {
+            throw new BadRequestException("User is inactive");
+        }
+
+        String token = jwtUtil.generateToken(
+                user.getId(),
+                user.getEmail(),
+                user.getRole()
+        );
+
+        // ✅ REQUIRED 4-ARG CONSTRUCTOR
+        return new JwtResponse(
+                token,
+                user.getId(),
+                user.getEmail(),
+                user.getRole()
+        );
+    }
 }
