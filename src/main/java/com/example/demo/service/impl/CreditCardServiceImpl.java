@@ -48,9 +48,4 @@ public class CreditCardServiceImpl implements CreditCardService {
     public List<CreditCardRecord> getActiveCardsByUser(Long userId) {
         return repository.findActiveCardsByUser(userId);
     }
-
-    @Override
-    public List<CreditCardRecord> getAllCards() {
-        return repository.findAll();
-    }
 }
