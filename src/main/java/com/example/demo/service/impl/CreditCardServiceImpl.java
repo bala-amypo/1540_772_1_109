@@ -49,7 +49,7 @@ public class CreditCardServiceImpl implements CreditCardService {
         return repository.findByUserId(userId);
     }
 
-    @Override
+    // ❗ NOT IN INTERFACE → NO @Override
     public List<CreditCardRecord> getActiveCardsByUser(Long userId) {
         return repository.findActiveCardsByUser(userId);
     }
