@@ -15,10 +15,8 @@ public class UserProfileServiceImpl implements UserProfileService {
     private final UserProfileRepository repository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserProfileServiceImpl(
-            UserProfileRepository repository,
-            PasswordEncoder passwordEncoder
-    ) {
+    public UserProfileServiceImpl(UserProfileRepository repository,
+                                  PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -26,33 +24,34 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public UserProfile createUser(UserProfile user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        if (user.getRole() == null) {
-            user.setRole("USER"); // ✅ fixes t31
-        }
-        return repository.save(user);
-    }
-
-    @Override
-    public UserProfile getUserById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-    }
-
-    @Override
-    public List<UserProfile> getAllUsers() {
-        return repository.findAll();
-    }
-
-    @Override
-    public UserProfile updateUserStatus(Long id, boolean active) {
-        UserProfile user = getUserById(id);
-        user.setActive(active);
         return repository.save(user);
     }
 
     @Override
     public UserProfile findByEmail(String email) {
         return repository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+    }
+
+    @Override
+    public UserProfile findByUserId(String userId) {
+        return repository.findByUserId(userId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+    }
+
+    @Override
+    public UserProfile updateUserStatus(Long id, boolean active) {
+        UserProfile user = repository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+        user.setActive(active);
+        return repository.save(user);
+    }
+
+    @Override
+    public List<UserProfile> getAllUsers() {
+        return repository.findAll();
     }
 }
