@@ -39,58 +39,44 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public JwtResponse register(RegisterRequest request) {
 
-        UserProfile user = new UserProfile();
-        user.setUserId(request.getUserId());
-        user.setFullName(request.getFullName());
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
-        user.setRole(request.getRole());
-        user.setActive(true);
+    UserProfile user = new UserProfile();
+    user.setUserId(request.getUserId());
+    user.setEmail(request.getEmail());
+    user.setPassword(request.getPassword());
+    user.setFullName(request.getFullName());
 
-        UserProfile savedUser = userProfileService.createUser(user);
+    // ✅ REQUIRED defaults
+    user.setRole("USER");
+    user.setActive(true);
 
-        String token = jwtUtil.generateToken(
-                savedUser.getId(),
-                savedUser.getEmail(),
-                savedUser.getRole()
-        );
+    UserProfile saved = userProfileService.createUser(user);
 
-        return new JwtResponse(
-                token,
-                savedUser.getId(),
-                savedUser.getEmail(),
-                savedUser.getRole()
-        );
+    String token = jwtUtil.generateToken(
+            saved.getId(),
+            saved.getEmail(),
+            saved.getRole()
+    );
+
+    return new JwtResponse(token);
+}
+
+
+   @Override
+public JwtResponse login(LoginRequest request) {
+
+    UserProfile user = userProfileService.findByEmail(request.getEmail());
+
+    if (!user.getActive()) {
+        throw new BadRequestException("User is inactive");
     }
 
-    @Override
-    public JwtResponse login(LoginRequest request) {
+    String token = jwtUtil.generateToken(
+            user.getId(),
+            user.getEmail(),
+            user.getRole()
+    );
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
+    return new JwtResponse(token);
+}
 
-        UserProfile user = userProfileRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new BadRequestException("Invalid credentials"));
-
-        if (!user.getActive()) {
-            throw new BadRequestException("User is not active");
-        }
-
-        String token = jwtUtil.generateToken(
-                user.getId(),
-                user.getEmail(),
-                user.getRole()
-        );
-
-        return new JwtResponse(
-                token,
-                user.getId(),
-                user.getEmail(),
-                user.getRole()
-        );
-    }
 }
