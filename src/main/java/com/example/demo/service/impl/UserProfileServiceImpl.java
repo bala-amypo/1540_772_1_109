@@ -5,7 +5,6 @@ import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserProfileRepository;
 import com.example.demo.service.UserProfileService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,47 +13,29 @@ import java.util.List;
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
 
-    private UserProfileRepository userProfileRepository;
-    private PasswordEncoder passwordEncoder;
-    // ADD THIS CONSTRUCTOR AT TOP OF CLASS
-public UserProfileServiceImpl(
-        UserProfileRepository userProfileRepository,
-        PasswordEncoder passwordEncoder
-) {
-    this.userProfileRepository = userProfileRepository;
-    this.passwordEncoder = passwordEncoder;
-}
-
-    // ✅ REQUIRED BY TESTS
-    public UserProfileServiceImpl() {}
+    private final UserProfileRepository userProfileRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // ✅ REQUIRED BY TESTS
     public UserProfileServiceImpl(
-            UserProfileRepository repo,
-            PasswordEncoder encoder
+            UserProfileRepository userProfileRepository,
+            PasswordEncoder passwordEncoder
     ) {
-        this.userProfileRepository = repo;
-        this.passwordEncoder = encoder;
-    }
-
-    @Autowired
-    public void setUserProfileRepository(UserProfileRepository repo) {
-        this.userProfileRepository = repo;
-    }
-
-    @Autowired
-    public void setPasswordEncoder(PasswordEncoder encoder) {
-        this.passwordEncoder = encoder;
+        this.userProfileRepository = userProfileRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public UserProfile createUser(UserProfile profile) {
+
         if (userProfileRepository.existsByUserId(profile.getUserId())) {
             throw new BadRequestException("UserId already exists");
         }
+
         if (userProfileRepository.existsByEmail(profile.getEmail())) {
             throw new BadRequestException("Email already exists");
         }
+
         profile.setPassword(passwordEncoder.encode(profile.getPassword()));
         return userProfileRepository.save(profile);
     }

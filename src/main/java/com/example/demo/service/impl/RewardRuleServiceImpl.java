@@ -5,7 +5,6 @@ import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.RewardRuleRepository;
 import com.example.demo.service.RewardRuleService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,51 +12,53 @@ import java.util.List;
 @Service
 public class RewardRuleServiceImpl implements RewardRuleService {
 
-    private RewardRuleRepository repo;
-    public RewardRuleServiceImpl(RewardRuleRepository repository) {
-    this.rewardRuleRepository = repository;
-}
+    private final RewardRuleRepository rewardRuleRepository;
 
-
-    public RewardRuleServiceImpl() {}
-
-    public RewardRuleServiceImpl(RewardRuleRepository repo) {
-        this.repo = repo;
-    }
-
-    @Autowired
-    public void setRepo(RewardRuleRepository repo) {
-        this.repo = repo;
+    // ✅ REQUIRED BY TESTS
+    public RewardRuleServiceImpl(RewardRuleRepository rewardRuleRepository) {
+        this.rewardRuleRepository = rewardRuleRepository;
     }
 
     @Override
     public RewardRule createRule(RewardRule rule) {
-        return repo.save(rule);
+
+        if (rule.getMultiplier() == null || rule.getMultiplier() <= 0) {
+            throw new BadRequestException("Multiplier must be greater than zero");
+        }
+
+        return rewardRuleRepository.save(rule);
     }
 
     @Override
     public RewardRule updateRule(Long id, RewardRule updated) {
-        RewardRule existing = repo.findById(id)
+
+        RewardRule existing = rewardRuleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reward rule not found"));
+
+        if (updated.getMultiplier() != null && updated.getMultiplier() <= 0) {
+            throw new BadRequestException("Multiplier must be greater than zero");
+        }
+
         existing.setCategory(updated.getCategory());
         existing.setRewardType(updated.getRewardType());
         existing.setMultiplier(updated.getMultiplier());
         existing.setActive(updated.getActive());
-        return repo.save(existing);
+
+        return rewardRuleRepository.save(existing);
     }
 
     @Override
     public List<RewardRule> getRulesByCard(Long cardId) {
-        return repo.findByCardId(cardId);
+        return rewardRuleRepository.findByCardId(cardId);
     }
 
     @Override
     public List<RewardRule> getActiveRules() {
-        return repo.findByActiveTrue();
+        return rewardRuleRepository.findByActiveTrue();
     }
 
     @Override
     public List<RewardRule> getAllRules() {
-        return repo.findAll();
+        return rewardRuleRepository.findAll();
     }
 }
