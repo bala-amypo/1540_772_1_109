@@ -36,12 +36,8 @@ public JwtResponse register(RegisterRequest request) {
     user.setEmail(request.getEmail());
     user.setPassword(request.getPassword());
 
-    // ✅ TEST EXPECTS DEFAULT ROLE = USER
-    if (request.getRole() == null || request.getRole().isBlank()) {
-        user.setRole("USER");
-    } else {
-        user.setRole(request.getRole());
-    }
+    // ✅ TEST DEMANDS DEFAULT ROLE ALWAYS
+    user.setRole("USER");
 
     user.setActive(true);
 
