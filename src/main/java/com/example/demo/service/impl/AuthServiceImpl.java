@@ -4,25 +4,25 @@ import com.example.demo.dto.JwtResponse;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.UserProfile;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.AuthService;
 import com.example.demo.service.UserProfileService;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthServiceImpl implements AuthService {
 
     private final UserProfileService userProfileService;
-    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
     public AuthServiceImpl(UserProfileService userProfileService,
-                           PasswordEncoder passwordEncoder,
+                           AuthenticationManager authenticationManager,
                            JwtUtil jwtUtil) {
         this.userProfileService = userProfileService;
-        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
     }
 
@@ -30,9 +30,10 @@ public class AuthServiceImpl implements AuthService {
     public JwtResponse register(RegisterRequest request) {
 
         UserProfile user = new UserProfile();
-        user.setUserId(request.getUserId());
+        user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
+        user.setRole(request.getRole());
 
         UserProfile saved = userProfileService.createUser(user);
 
@@ -42,7 +43,6 @@ public class AuthServiceImpl implements AuthService {
                 saved.getRole()
         );
 
-        // ✅ REQUIRED constructor
         return new JwtResponse(
                 token,
                 saved.getId(),
@@ -54,11 +54,14 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public JwtResponse login(LoginRequest request) {
 
-        UserProfile user = userProfileService.findByEmail(request.getEmail());
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new ResourceNotFoundException("Invalid credentials");
-        }
+        UserProfile user = userProfileService.findByEmail(request.getEmail());
 
         String token = jwtUtil.generateToken(
                 user.getId(),

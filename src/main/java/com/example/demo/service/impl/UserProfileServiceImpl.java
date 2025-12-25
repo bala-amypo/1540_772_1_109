@@ -23,26 +23,18 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     public UserProfile createUser(UserProfile user) {
-
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        // ✅ REQUIRED FOR TEST: default role
-        if (user.getRole() == null) {
-            user.setRole("USER");
-        }
-
-        // ✅ REQUIRED FOR TEST: default active
-        user.setActive(true);
-
         return repository.save(user);
     }
 
+    // ✅ REQUIRED BY INTERFACE (Long id)
     @Override
     public UserProfile getUserById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
+    // ✅ REQUIRED (String userId)
     @Override
     public UserProfile findByUserId(String userId) {
         return repository.findByUserId(userId)
@@ -56,8 +48,9 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public UserProfile updateUserStatus(Long id, boolean active) {
-        UserProfile user = getUserById(id);
+    public UserProfile updateUserStatus(Long userId, boolean active) {
+        UserProfile user = repository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         user.setActive(active);
         return repository.save(user);
     }
