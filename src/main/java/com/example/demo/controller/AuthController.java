@@ -8,6 +8,7 @@ import com.example.demo.service.UserProfileService;
 import com.example.demo.repository.UserProfileRepository;
 import com.example.demo.security.JwtUtil;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,12 +20,13 @@ public class AuthController {
 
     private final AuthService authService;
 
-    // ✅ Constructor used by SPRING
+    // ✅ SPRING WILL USE THIS
+    @Autowired
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
-    // ✅ Constructor REQUIRED BY TEST CASES
+    // ✅ TEST CASES WILL USE THIS
     public AuthController(
             AuthService authService,
             UserProfileService userProfileService,
