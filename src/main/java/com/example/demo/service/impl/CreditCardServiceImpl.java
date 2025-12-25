@@ -20,18 +20,29 @@ public class CreditCardServiceImpl implements CreditCardService {
     }
 
     @Override
-    public CreditCardRecord addCard(CreditCardRecord card) {
+public CreditCardRecord addCard(CreditCardRecord card) {
 
-        if (card.getAnnualFee() < 0) {
-            throw new BadRequestException("Annual fee must be non-negative");
-        }
-
-        if (card.getUserId() == null) {
-            throw new BadRequestException("UserId is required");
-        }
-
-        return creditCardRecordRepository.save(card);
+    if (card.getUserId() == null) {
+        throw new BadRequestException("UserId is required");
     }
+
+    // ✅ DEFAULT annualFee
+    if (card.getAnnualFee() == null) {
+        card.setAnnualFee(0.0);
+    }
+
+    if (card.getAnnualFee() < 0) {
+        throw new BadRequestException("Annual fee must be non-negative");
+    }
+
+    // ✅ DEFAULT status
+    if (card.getStatus() == null) {
+        card.setStatus("ACTIVE");
+    }
+
+    return creditCardRecordRepository.save(card);
+}
+
 
     @Override
     public CreditCardRecord updateCard(Long id, CreditCardRecord updated) {
