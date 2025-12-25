@@ -27,7 +27,14 @@ public class UserProfileServiceImpl implements UserProfileService {
         return repository.save(user);
     }
 
-    // ✅ REQUIRED (String, NOT Long)
+    // ✅ REQUIRED BY INTERFACE (Long id)
+    @Override
+    public UserProfile getUserById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    // ✅ REQUIRED (String userId)
     @Override
     public UserProfile findByUserId(String userId) {
         return repository.findByUserId(userId)
