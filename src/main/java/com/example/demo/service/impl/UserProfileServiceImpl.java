@@ -16,6 +16,14 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     private UserProfileRepository userProfileRepository;
     private PasswordEncoder passwordEncoder;
+    // ADD THIS CONSTRUCTOR AT TOP OF CLASS
+public UserProfileServiceImpl(
+        UserProfileRepository userProfileRepository,
+        PasswordEncoder passwordEncoder
+) {
+    this.userProfileRepository = userProfileRepository;
+    this.passwordEncoder = passwordEncoder;
+}
 
     // ✅ REQUIRED BY TESTS
     public UserProfileServiceImpl() {}

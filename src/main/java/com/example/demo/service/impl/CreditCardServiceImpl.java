@@ -14,6 +14,10 @@ import java.util.List;
 public class CreditCardServiceImpl implements CreditCardService {
 
     private CreditCardRecordRepository repo;
+    public CreditCardServiceImpl(CreditCardRecordRepository repository) {
+    this.creditCardRecordRepository = repository;
+}
+
 
     public CreditCardServiceImpl() {}
 
