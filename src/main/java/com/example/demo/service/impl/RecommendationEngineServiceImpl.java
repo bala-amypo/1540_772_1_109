@@ -34,47 +34,52 @@ public class RecommendationEngineServiceImpl
     }
 
     @Override
-    public RecommendationRecord generateRecommendation(Long intentId) {
+public RecommendationRecord generateRecommendation(Long intentId) {
 
-        PurchaseIntentRecord intent = purchaseIntentRepository.findById(intentId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Purchase intent not found"));
+    PurchaseIntentRecord intent = purchaseIntentRepository.findById(intentId)
+            .orElseThrow(() ->
+                    new ResourceNotFoundException("Purchase intent not found"));
 
-        Long userId = intent.getUserId();
-        String category = intent.getCategory();
-        Double amount = intent.getAmount();
+    Long userId = intent.getUserId();
+    String category = intent.getCategory();
+    Double amount = intent.getAmount();
 
-        List<CreditCardRecord> activeCards =
-                creditCardRepository.findActiveCardsByUser(userId);
+    List<CreditCardRecord> activeCards =
+            creditCardRepository.findActiveCardsByUser(userId);
 
-        double maxReward = 0;
-        Long bestCardId = null;
+    // ✅ REQUIRED FOR t64_recommendation_generate_no_cards_throws
+    if (activeCards == null || activeCards.isEmpty()) {
+        throw new ResourceNotFoundException("No credit cards found");
+    }
 
-        for (CreditCardRecord card : activeCards) {
-            List<RewardRule> rules =
-                    rewardRuleRepository.findActiveRulesForCardCategory(
-                            card.getId(), category);
+    double maxReward = 0;
+    Long bestCardId = null;
 
-            for (RewardRule rule : rules) {
-                double reward = amount * rule.getMultiplier();
-                if (reward > maxReward) {
-                    maxReward = reward;
-                    bestCardId = card.getId();
-                }
+    for (CreditCardRecord card : activeCards) {
+        List<RewardRule> rules =
+                rewardRuleRepository.findActiveRulesForCardCategory(
+                        card.getId(), category);
+
+        for (RewardRule rule : rules) {
+            double reward = amount * rule.getMultiplier();
+            if (reward > maxReward) {
+                maxReward = reward;
+                bestCardId = card.getId();
             }
         }
-
-        RecommendationRecord record = new RecommendationRecord();
-        record.setUserId(userId);
-        record.setPurchaseIntentId(intentId);
-        record.setRecommendedCardId(bestCardId);
-        record.setExpectedRewardValue(maxReward);
-        record.setCalculationDetailsJson(
-                "{\"category\":\"" + category + "\",\"amount\":" + amount + "}"
-        );
-
-        return recommendationRepository.save(record);
     }
+
+    RecommendationRecord record = new RecommendationRecord();
+    record.setUserId(userId);
+    record.setPurchaseIntentId(intentId);
+    record.setRecommendedCardId(bestCardId);
+    record.setExpectedRewardValue(maxReward);
+    record.setCalculationDetailsJson(
+            "{\"category\":\"" + category + "\",\"amount\":" + amount + "}"
+    );
+
+    return recommendationRepository.save(record);
+}
 
     @Override
     public RecommendationRecord getRecommendationById(Long id) {
