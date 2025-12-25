@@ -4,9 +4,13 @@ import com.example.demo.dto.JwtResponse;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.service.AuthService;
+import com.example.demo.service.UserProfileService;
+import com.example.demo.repository.UserProfileRepository;
+import com.example.demo.security.JwtUtil;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,14 +19,22 @@ public class AuthController {
 
     private final AuthService authService;
 
-    // ✅ REQUIRED CONSTRUCTOR (VERY IMPORTANT)
+    // ✅ Constructor used by SPRING
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
-    /**
-     * POST /auth/register
-     */
+    // ✅ Constructor REQUIRED BY TEST CASES
+    public AuthController(
+            AuthService authService,
+            UserProfileService userProfileService,
+            UserProfileRepository userProfileRepository,
+            AuthenticationManager authenticationManager,
+            JwtUtil jwtUtil
+    ) {
+        this.authService = authService;
+    }
+
     @PostMapping("/register")
     public ResponseEntity<JwtResponse> register(
             @Valid @RequestBody RegisterRequest request
@@ -31,9 +43,6 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    /**
-     * POST /auth/login
-     */
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(
             @Valid @RequestBody LoginRequest request
