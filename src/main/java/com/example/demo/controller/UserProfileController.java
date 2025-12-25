@@ -1,52 +1,51 @@
+package com.example.demo.controller;
+
+import com.example.demo.dto.JwtResponse;
+import com.example.demo.dto.LoginRequest;
+import com.example.demo.dto.RegisterRequest;
+import com.example.demo.service.AuthService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 @RestController
-@RequestMapping("/api/users")
-public class UserProfileController {
+@RequestMapping("/auth")
+public class AuthController {
 
-    private UserProfileService userProfileService;
+    private AuthService authService;
 
-    // ✅ REQUIRED BY TESTS
-    public UserProfileController() {}
+    // REQUIRED by tests
+    public AuthController() {}
 
-    // ✅ REQUIRED BY TESTS
-    public UserProfileController(UserProfileService service) {
-        this.userProfileService = service;
+    // REQUIRED by tests
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
 
     @Autowired
-    public void setUserProfileService(UserProfileService service) {
-        this.userProfileService = service;
+    public void setAuthService(AuthService authService) {
+        this.authService = authService;
     }
 
-    @PostMapping
-    public ResponseEntity<UserProfile> createUser(@RequestBody UserProfile profile) {
+    @PostMapping("/register")
+    public ResponseEntity<JwtResponse> register(
+            @RequestBody RegisterRequest request
+    ) {
         return new ResponseEntity<>(
-                userProfileService.createUser(profile),
+                authService.register(request),
                 HttpStatus.CREATED
         );
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserProfile> getUserById(@PathVariable Long id) {
-        return ResponseEntity.ok(userProfileService.getUserById(id));
-    }
-
-    @GetMapping
-    public ResponseEntity<List<UserProfile>> getAllUsers() {
-        return ResponseEntity.ok(userProfileService.getAllUsers());
-    }
-
-    @PutMapping("/{id}/status")
-    public ResponseEntity<UserProfile> updateUserStatus(
-            @PathVariable Long id,
-            @RequestParam boolean active
+    @PostMapping("/login")
+    public ResponseEntity<JwtResponse> login(
+            @RequestBody LoginRequest request
     ) {
-        return ResponseEntity.ok(
-                userProfileService.updateUserStatus(id, active)
-        );
-    }
-
-    @GetMapping("/lookup/{userId}")
-    public ResponseEntity<UserProfile> findByUserId(@PathVariable String userId) {
-        return ResponseEntity.ok(userProfileService.findByUserId(userId));
+        return ResponseEntity.ok(authService.login(request));
     }
 }
