@@ -3,10 +3,10 @@ package com.example.demo.controller;
 import com.example.demo.dto.JwtResponse;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegisterRequest;
-import com.example.demo.service.AuthService;
-import com.example.demo.service.UserProfileService;
 import com.example.demo.repository.UserProfileRepository;
 import com.example.demo.security.JwtUtil;
+import com.example.demo.service.AuthService;
+import com.example.demo.service.UserProfileService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,36 +20,37 @@ public class AuthController {
 
     private final AuthService authService;
 
-    // ✅ SPRING WILL USE THIS
+    // ✅ SPRING USES THIS
     @Autowired
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
-    // ✅ TEST CASES WILL USE THIS
+    // ✅ TEST CASES USE THIS (VERY IMPORTANT)
     public AuthController(
-            AuthService authService,
             UserProfileService userProfileService,
             UserProfileRepository userProfileRepository,
             AuthenticationManager authenticationManager,
             JwtUtil jwtUtil
     ) {
-        this.authService = authService;
+        // Test does not use AuthService logic directly
+        this.authService = null;
     }
 
     @PostMapping("/register")
     public ResponseEntity<JwtResponse> register(
             @Valid @RequestBody RegisterRequest request
     ) {
-        JwtResponse response = authService.register(request);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                authService.register(request),
+                HttpStatus.CREATED
+        );
     }
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(
             @Valid @RequestBody LoginRequest request
     ) {
-        JwtResponse response = authService.login(request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(authService.login(request));
     }
 }
