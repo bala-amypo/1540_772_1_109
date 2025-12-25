@@ -27,29 +27,33 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public JwtResponse register(RegisterRequest request) {
+public JwtResponse register(RegisterRequest request) {
 
-        UserProfile user = new UserProfile();
-        user.setFullName(request.getFullName());
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
-        user.setRole(request.getRole());
+    UserProfile user = new UserProfile();
+    user.setFullName(request.getFullName());
+    user.setEmail(request.getEmail());
+    user.setPassword(request.getPassword());
 
-        UserProfile saved = userProfileService.createUser(user);
+    // ✅ REQUIRED DEFAULT LOGIC
+    user.setRole("USER");
+    user.setActive(true);
 
-        String token = jwtUtil.generateToken(
-                saved.getId(),
-                saved.getEmail(),
-                saved.getRole()
-        );
+    UserProfile saved = userProfileService.createUser(user);
 
-        return new JwtResponse(
-                token,
-                saved.getId(),
-                saved.getEmail(),
-                saved.getRole()
-        );
-    }
+    String token = jwtUtil.generateToken(
+            saved.getId(),
+            saved.getEmail(),
+            saved.getRole()
+    );
+
+    return new JwtResponse(
+            token,
+            saved.getId(),
+            saved.getEmail(),
+            saved.getRole()
+    );
+}
+
 
     @Override
     public JwtResponse login(LoginRequest request) {
