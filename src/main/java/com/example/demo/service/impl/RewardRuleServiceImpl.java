@@ -13,49 +13,47 @@ import java.util.List;
 @Service
 public class RewardRuleServiceImpl implements RewardRuleService {
 
+    private RewardRuleRepository repo;
+
+    public RewardRuleServiceImpl() {}
+
+    public RewardRuleServiceImpl(RewardRuleRepository repo) {
+        this.repo = repo;
+    }
+
     @Autowired
-    private RewardRuleRepository rewardRuleRepository;
+    public void setRepo(RewardRuleRepository repo) {
+        this.repo = repo;
+    }
 
     @Override
     public RewardRule createRule(RewardRule rule) {
-
-        if (rule.getMultiplier() == null || rule.getMultiplier() <= 0) {
-            throw new BadRequestException("Multiplier must be greater than zero");
-        }
-
-        return rewardRuleRepository.save(rule);
+        return repo.save(rule);
     }
 
     @Override
     public RewardRule updateRule(Long id, RewardRule updated) {
-
-        RewardRule existing = rewardRuleRepository.findById(id)
+        RewardRule existing = repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reward rule not found"));
-
-        if (updated.getMultiplier() != null && updated.getMultiplier() <= 0) {
-            throw new BadRequestException("Multiplier must be greater than zero");
-        }
-
         existing.setCategory(updated.getCategory());
         existing.setRewardType(updated.getRewardType());
         existing.setMultiplier(updated.getMultiplier());
         existing.setActive(updated.getActive());
-
-        return rewardRuleRepository.save(existing);
+        return repo.save(existing);
     }
 
     @Override
     public List<RewardRule> getRulesByCard(Long cardId) {
-        return rewardRuleRepository.findByCardId(cardId);
+        return repo.findByCardId(cardId);
     }
 
     @Override
     public List<RewardRule> getActiveRules() {
-        return rewardRuleRepository.findByActiveTrue();
+        return repo.findByActiveTrue();
     }
 
     @Override
     public List<RewardRule> getAllRules() {
-        return rewardRuleRepository.findAll();
+        return repo.findAll();
     }
 }

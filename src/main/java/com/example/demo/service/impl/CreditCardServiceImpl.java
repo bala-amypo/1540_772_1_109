@@ -13,50 +13,52 @@ import java.util.List;
 @Service
 public class CreditCardServiceImpl implements CreditCardService {
 
+    private CreditCardRecordRepository repo;
+
+    public CreditCardServiceImpl() {}
+
+    public CreditCardServiceImpl(CreditCardRecordRepository repo) {
+        this.repo = repo;
+    }
+
     @Autowired
-    private CreditCardRecordRepository creditCardRecordRepository;
+    public void setRepo(CreditCardRecordRepository repo) {
+        this.repo = repo;
+    }
 
     @Override
     public CreditCardRecord addCard(CreditCardRecord card) {
-
         if (card.getAnnualFee() < 0) {
             throw new BadRequestException("Annual fee must be non-negative");
         }
-
-        if (card.getUserId() == null) {
-            throw new BadRequestException("UserId is required");
-        }
-
-        return creditCardRecordRepository.save(card);
+        return repo.save(card);
     }
 
     @Override
     public CreditCardRecord updateCard(Long id, CreditCardRecord updated) {
-
         CreditCardRecord existing = getCardById(id);
-
         existing.setCardName(updated.getCardName());
         existing.setIssuer(updated.getIssuer());
         existing.setCardType(updated.getCardType());
         existing.setAnnualFee(updated.getAnnualFee());
         existing.setStatus(updated.getStatus());
-
-        return creditCardRecordRepository.save(existing);
+        return repo.save(existing);
     }
 
     @Override
     public List<CreditCardRecord> getCardsByUser(Long userId) {
-        return creditCardRecordRepository.findByUserId(userId);
+        return repo.findByUserId(userId);
     }
 
     @Override
     public CreditCardRecord getCardById(Long id) {
-        return creditCardRecordRepository.findById(id)
+        return repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Card not found"));
     }
 
     @Override
     public List<CreditCardRecord> getAllCards() {
-        return creditCardRecordRepository.findAll();
+        return repo.findAll();
     }
 }
+

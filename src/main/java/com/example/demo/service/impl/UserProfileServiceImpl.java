@@ -14,23 +14,39 @@ import java.util.List;
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
 
-    @Autowired
     private UserProfileRepository userProfileRepository;
+    private PasswordEncoder passwordEncoder;
+
+    // ✅ REQUIRED BY TESTS
+    public UserProfileServiceImpl() {}
+
+    // ✅ REQUIRED BY TESTS
+    public UserProfileServiceImpl(
+            UserProfileRepository repo,
+            PasswordEncoder encoder
+    ) {
+        this.userProfileRepository = repo;
+        this.passwordEncoder = encoder;
+    }
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    public void setUserProfileRepository(UserProfileRepository repo) {
+        this.userProfileRepository = repo;
+    }
+
+    @Autowired
+    public void setPasswordEncoder(PasswordEncoder encoder) {
+        this.passwordEncoder = encoder;
+    }
 
     @Override
     public UserProfile createUser(UserProfile profile) {
-
         if (userProfileRepository.existsByUserId(profile.getUserId())) {
             throw new BadRequestException("UserId already exists");
         }
-
         if (userProfileRepository.existsByEmail(profile.getEmail())) {
             throw new BadRequestException("Email already exists");
         }
-
         profile.setPassword(passwordEncoder.encode(profile.getPassword()));
         return userProfileRepository.save(profile);
     }

@@ -13,37 +13,37 @@ import java.util.List;
 @Service
 public class PurchaseIntentServiceImpl implements PurchaseIntentService {
 
+    private PurchaseIntentRecordRepository repo;
+
+    public PurchaseIntentServiceImpl() {}
+
+    public PurchaseIntentServiceImpl(PurchaseIntentRecordRepository repo) {
+        this.repo = repo;
+    }
+
     @Autowired
-    private PurchaseIntentRecordRepository purchaseIntentRecordRepository;
+    public void setRepo(PurchaseIntentRecordRepository repo) {
+        this.repo = repo;
+    }
 
     @Override
     public PurchaseIntentRecord createIntent(PurchaseIntentRecord intent) {
-
-        if (intent.getAmount() == null || intent.getAmount() <= 0) {
-            throw new BadRequestException("Amount must be greater than zero");
-        }
-
-        if (intent.getUserId() == null) {
-            throw new BadRequestException("UserId is required");
-        }
-
-        return purchaseIntentRecordRepository.save(intent);
+        return repo.save(intent);
     }
 
     @Override
     public List<PurchaseIntentRecord> getIntentsByUser(Long userId) {
-        return purchaseIntentRecordRepository.findByUserId(userId);
+        return repo.findByUserId(userId);
     }
 
     @Override
     public PurchaseIntentRecord getIntentById(Long id) {
-        return purchaseIntentRecordRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Purchase intent not found"));
+        return repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Purchase intent not found"));
     }
 
     @Override
     public List<PurchaseIntentRecord> getAllIntents() {
-        return purchaseIntentRecordRepository.findAll();
+        return repo.findAll();
     }
 }
