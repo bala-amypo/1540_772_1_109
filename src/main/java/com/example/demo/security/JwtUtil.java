@@ -1,16 +1,29 @@
+package com.example.demo.security;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Component;
+
+import java.security.Key;
+import java.util.Date;
+
 @Component
 public class JwtUtil {
 
     private final Key key;
     private final long expirationMs;
 
+    // Default constructor for Spring
     public JwtUtil() {
         this.key = Keys.hmacShaKeyFor(
-            "credit-card-reward-maximizer-secret-key-256-bits!!".getBytes()
+                "credit-card-reward-maximizer-secret-key-256-bits!!".getBytes()
         );
-        this.expirationMs = 3600000L;
+        this.expirationMs = 3600000L; // 1 hour
     }
 
+    // Constructor REQUIRED by tests
     public JwtUtil(byte[] secret, Long expirationMs) {
         this.key = Keys.hmacShaKeyFor(secret);
         this.expirationMs = expirationMs;
