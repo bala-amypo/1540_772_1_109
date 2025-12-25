@@ -35,6 +35,14 @@ public class UserProfileServiceImpl implements UserProfileService {
         if (userProfileRepository.existsByEmail(profile.getEmail())) {
             throw new BadRequestException("Email already exists");
         }
+        if (profile.getRole() == null) {
+        profile.setRole("USER");
+    }
+
+    // ✅ DEFAULT ACTIVE
+    if (profile.getActive() == null) {
+        profile.setActive(true);
+    }
 
         profile.setPassword(passwordEncoder.encode(profile.getPassword()));
         return userProfileRepository.save(profile);

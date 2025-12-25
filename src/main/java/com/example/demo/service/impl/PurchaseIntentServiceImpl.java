@@ -24,16 +24,22 @@ public class PurchaseIntentServiceImpl implements PurchaseIntentService {
     @Override
     public PurchaseIntentRecord createIntent(PurchaseIntentRecord intent) {
 
-        if (intent.getAmount() == null || intent.getAmount() <= 0) {
-            throw new BadRequestException("Amount must be greater than zero");
-        }
-
-        if (intent.getUserId() == null) {
-            throw new BadRequestException("UserId is required");
-        }
-
-        return purchaseIntentRecordRepository.save(intent);
+    if (intent.getUserId() == null) {
+        throw new BadRequestException("UserId is required");
     }
+
+    // ✅ DEFAULT amount
+    if (intent.getAmount() == null) {
+        intent.setAmount(0.0);
+    }
+
+    if (intent.getAmount() < 0) {
+        throw new BadRequestException("Amount must be greater than or equal to zero");
+    }
+
+    return purchaseIntentRecordRepository.save(intent);
+}
+
 
     @Override
     public List<PurchaseIntentRecord> getIntentsByUser(Long userId) {
