@@ -46,4 +46,11 @@ public class SecurityConfig {
     ) throws Exception {
         return config.getAuthenticationManager();
     }
+    @Bean
+public JwtUtil jwtUtil() {
+    return new JwtUtil(
+            "credit-card-reward-secret".getBytes(),
+            3600000L
+    );
+}
 }
