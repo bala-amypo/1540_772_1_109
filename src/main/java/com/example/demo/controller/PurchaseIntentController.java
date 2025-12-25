@@ -1,25 +1,23 @@
-package com.example.demo.controller;
-
-import com.example.demo.entity.PurchaseIntentRecord;
-import com.example.demo.service.PurchaseIntentService;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/intents")
 public class PurchaseIntentController {
 
-    @Autowired
     private PurchaseIntentService purchaseIntentService;
+
+    public PurchaseIntentController() {}
+
+    public PurchaseIntentController(PurchaseIntentService service) {
+        this.purchaseIntentService = service;
+    }
+
+    @Autowired
+    public void setPurchaseIntentService(PurchaseIntentService service) {
+        this.purchaseIntentService = service;
+    }
 
     @PostMapping
     public ResponseEntity<PurchaseIntentRecord> createIntent(
-            @Valid @RequestBody PurchaseIntentRecord intent
+            @RequestBody PurchaseIntentRecord intent
     ) {
         return new ResponseEntity<>(
                 purchaseIntentService.createIntent(intent),
@@ -31,24 +29,16 @@ public class PurchaseIntentController {
     public ResponseEntity<List<PurchaseIntentRecord>> getIntentsByUser(
             @PathVariable Long userId
     ) {
-        return ResponseEntity.ok(
-                purchaseIntentService.getIntentsByUser(userId)
-        );
+        return ResponseEntity.ok(purchaseIntentService.getIntentsByUser(userId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PurchaseIntentRecord> getIntentById(
-            @PathVariable Long id
-    ) {
-        return ResponseEntity.ok(
-                purchaseIntentService.getIntentById(id)
-        );
+    public ResponseEntity<PurchaseIntentRecord> getIntentById(@PathVariable Long id) {
+        return ResponseEntity.ok(purchaseIntentService.getIntentById(id));
     }
 
     @GetMapping
     public ResponseEntity<List<PurchaseIntentRecord>> getAllIntents() {
-        return ResponseEntity.ok(
-                purchaseIntentService.getAllIntents()
-        );
+        return ResponseEntity.ok(purchaseIntentService.getAllIntents());
     }
 }

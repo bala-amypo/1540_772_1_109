@@ -1,26 +1,24 @@
-package com.example.demo.controller;
-
-import com.example.demo.entity.UserProfile;
-import com.example.demo.service.UserProfileService;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/users")
 public class UserProfileController {
 
-    @Autowired
     private UserProfileService userProfileService;
 
+    // ✅ REQUIRED BY TESTS
+    public UserProfileController() {}
+
+    // ✅ REQUIRED BY TESTS
+    public UserProfileController(UserProfileService service) {
+        this.userProfileService = service;
+    }
+
+    @Autowired
+    public void setUserProfileService(UserProfileService service) {
+        this.userProfileService = service;
+    }
+
     @PostMapping
-    public ResponseEntity<UserProfile> createUser(
-            @Valid @RequestBody UserProfile profile
-    ) {
+    public ResponseEntity<UserProfile> createUser(@RequestBody UserProfile profile) {
         return new ResponseEntity<>(
                 userProfileService.createUser(profile),
                 HttpStatus.CREATED
@@ -48,11 +46,7 @@ public class UserProfileController {
     }
 
     @GetMapping("/lookup/{userId}")
-    public ResponseEntity<UserProfile> findByUserId(
-            @PathVariable String userId
-    ) {
-        return ResponseEntity.ok(
-                userProfileService.findByUserId(userId)
-        );
+    public ResponseEntity<UserProfile> findByUserId(@PathVariable String userId) {
+        return ResponseEntity.ok(userProfileService.findByUserId(userId));
     }
 }
