@@ -52,7 +52,7 @@ public RecommendationRecord generateRecommendation(Long intentId) {
             creditCardRepository.findActiveCardsByUser(intent.getUserId());
 
     if (activeCards.isEmpty()) {
-        throw new ResourceNotFoundException("No active cards found");
+        throw new ResourceNotFoundException("No active credit cards found");
     }
 
     double maxReward = 0;

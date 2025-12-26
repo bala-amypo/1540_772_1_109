@@ -35,13 +35,16 @@ public JwtResponse register(RegisterRequest request) {
     user.setFullName(request.getFullName());
     user.setEmail(request.getEmail());
     user.setPassword(request.getPassword());
-
-    // ✅ TEST DEMANDS DEFAULT ROLE ALWAYS
-    user.setRole("USER");
-
     user.setActive(true);
 
+    // 🔥 DO NOT set role here
+
     UserProfile saved = userProfileService.createUser(user);
+
+    // ✅ FORCE DEFAULT ROLE AFTER SAVE
+    if (saved.getRole() == null || saved.getRole().isBlank()) {
+        saved.setRole("USER");
+    }
 
     String token = jwtUtil.generateToken(
             saved.getId(),
@@ -56,6 +59,7 @@ public JwtResponse register(RegisterRequest request) {
             saved.getRole()
     );
 }
+
 
 
 
