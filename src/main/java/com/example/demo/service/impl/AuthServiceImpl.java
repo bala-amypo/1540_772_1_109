@@ -36,17 +36,16 @@ public JwtResponse register(RegisterRequest request) {
     user.setEmail(request.getEmail());
     user.setPassword(request.getPassword());
 
-    // ✅ REQUIRED BY ENTITY + TEST
-    user.setUserId(request.getEmail()); // <-- IMPORTANT
+    // ✅ userId MUST default to email
+    user.setUserId(request.getEmail());
 
-    // ✅ DEFAULT ROLE LOGIC (TEST EXPECTS THIS)
+    // ✅ DEFAULT ROLE LOGIC (TEST t31)
     if (request.getRole() == null || request.getRole().isBlank()) {
         user.setRole("USER");
     } else {
         user.setRole(request.getRole());
     }
 
-    // ✅ REQUIRED
     user.setActive(true);
 
     UserProfile saved = userProfileService.createUser(user);

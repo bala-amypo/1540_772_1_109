@@ -15,17 +15,13 @@ public class RegisterRequest {
     @NotBlank
     private String password;
 
-    @NotBlank
+    // ✅ MUST be optional for default-role test
     private String role;
 
-    // Optional business user id
     private String userId;
 
-    // No-args constructor
-    public RegisterRequest() {
-    }
+    public RegisterRequest() {}
 
-    // Parameterized constructor
     public RegisterRequest(String fullName, String email, String password, String role, String userId) {
         this.fullName = fullName;
         this.email = email;
@@ -34,44 +30,18 @@ public class RegisterRequest {
         this.userId = userId;
     }
 
-    // Getters and Setters
-    public String getFullName() {
-        return fullName;
-    }
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 
-    public String getPassword() {
-        return password;
-    }
-    
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getRole() {
-        return role;
-    }
-    
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-    
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
 }
