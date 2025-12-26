@@ -37,14 +37,14 @@ public JwtResponse register(RegisterRequest request) {
     user.setPassword(request.getPassword());
     user.setActive(true);
 
-    // 🔥 DO NOT set role here
+    // ✅ MUST BE SET BEFORE createUser()
+    if (request.getRole() == null || request.getRole().trim().isEmpty()) {
+        user.setRole("USER");
+    } else {
+        user.setRole(request.getRole());
+    }
 
     UserProfile saved = userProfileService.createUser(user);
-
-    // ✅ FORCE DEFAULT ROLE AFTER SAVE
-    if (saved.getRole() == null || saved.getRole().isBlank()) {
-        saved.setRole("USER");
-    }
 
     String token = jwtUtil.generateToken(
             saved.getId(),
@@ -59,10 +59,6 @@ public JwtResponse register(RegisterRequest request) {
             saved.getRole()
     );
 }
-
-
-
-
 
     @Override
     public JwtResponse login(LoginRequest request) {
