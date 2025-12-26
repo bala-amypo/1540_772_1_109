@@ -5,6 +5,7 @@ import com.example.demo.entity.PurchaseIntentRecord;
 import com.example.demo.entity.RecommendationRecord;
 import com.example.demo.entity.RewardRule;
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.CreditCardRecordRepository;
 import com.example.demo.repository.PurchaseIntentRecordRepository;
 import com.example.demo.repository.RecommendationRecordRepository;
