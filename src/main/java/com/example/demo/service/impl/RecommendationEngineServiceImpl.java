@@ -49,9 +49,8 @@ public RecommendationRecord generateRecommendation(Long intentId) {
 
     List<CreditCardRecord> activeCards =
         creditCardRepository.findActiveCardsByUser(intent.getUserId());
-
-if (activeCards == null || activeCards.isEmpty()) {
-    throw new ResourceNotFoundException("No active credit cards found");
+        if (activeCards.isEmpty()) {
+    throw new BadRequestException("No active credit cards found");
 }
 
 

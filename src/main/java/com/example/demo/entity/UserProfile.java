@@ -42,7 +42,8 @@ public class UserProfile {
 
     @NotBlank
     @Column(nullable = false)
-    private String role;
+    private String role = "USER";
+
 
     @NotNull
     @Column(nullable = false)
