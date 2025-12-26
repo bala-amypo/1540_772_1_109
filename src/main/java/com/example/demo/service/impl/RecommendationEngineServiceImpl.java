@@ -47,13 +47,14 @@ public RecommendationRecord generateRecommendation(Long intentId) {
             .orElseThrow(() ->
                     new ResourceNotFoundException("Purchase intent not found"));
 
-    // ✅ MUST THROW IMMEDIATELY
-    List<CreditCardRecord> activeCards =
-            creditCardRepository.findActiveCardsByUser(intent.getUserId());
+   List<CreditCardRecord> activeCards =
+        creditCardRepository.findActiveCardsByUser(intent.getUserId());
 
-    if (activeCards.isEmpty()) {
-        throw new ResourceNotFoundException("No active credit cards found");
-    }
+// ✅ MUST HANDLE NULL + EMPTY
+if (activeCards == null || activeCards.isEmpty()) {
+    throw new ResourceNotFoundException("No active credit cards found");
+}
+
 
     double maxReward = 0;
     Long bestCardId = null;
