@@ -1,93 +1,84 @@
-package com.example.demo.service.impl;
-
-import com.example.demo.dto.JwtResponse;
-import com.example.demo.dto.LoginRequest;
-import com.example.demo.dto.RegisterRequest;
-import com.example.demo.entity.UserProfile;
-import com.example.demo.security.JwtUtil;
-import com.example.demo.service.AuthService;
-import com.example.demo.service.UserProfileService;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.stereotype.Service;
-
-@Service
-public class AuthServiceImpl implements AuthService {
-
-    private final UserProfileService userProfileService;
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
-
-    public AuthServiceImpl(
-            UserProfileService userProfileService,
-            AuthenticationManager authenticationManager,
-            JwtUtil jwtUtil
-    ) {
-        this.userProfileService = userProfileService;
-        this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
-    }
-
-@Override
-public JwtResponse register(RegisterRequest request) {
-
-    UserProfile user = new UserProfile();
-    user.setFullName(request.getFullName());
-    user.setEmail(request.getEmail());
-    user.setPassword(request.getPassword());
-
-    // ✅ userId MUST default to email
-    user.setUserId(request.getEmail());
-
-    // ✅ DEFAULT ROLE LOGIC (TEST t31)
-    if (request.getRole() == null || request.getRole().isBlank()) {
-        user.setRole("USER");
-    } else {
-        user.setRole(request.getRole());
-    }
-
-    user.setActive(true);
-
-    UserProfile saved = userProfileService.createUser(user);
-
-    String token = jwtUtil.generateToken(
-            saved.getId(),
-            saved.getEmail(),
-            saved.getRole()
-    );
-
-    return new JwtResponse(
-            token,
-            saved.getId(),
-            saved.getEmail(),
-            saved.getRole()
-    );
-}
-
-
-    @Override
-    public JwtResponse login(LoginRequest request) {
-
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
-
-        UserProfile user = userProfileService.findByEmail(request.getEmail());
-
-        String token = jwtUtil.generateToken(
-                user.getId(),
-                user.getEmail(),
-                user.getRole()
-        );
-
-        return new JwtResponse(
-                token,
-                user.getId(),
-                user.getEmail(),
-                user.getRole()
-        );
-    }
+package com.example.demo.service.impl; 
+import com.example.demo.dto.JwtResponse; 
+import com.example.demo.dto.LoginRequest; 
+import com.example.demo.dto.RegisterRequest; 
+import com.example.demo.entity.UserProfile; 
+import com.example.demo.exception.BadRequestException; 
+import com.example.demo.repository.UserProfileRepository; 
+import com.example.demo.security.JwtUtil; 
+import com.example.demo.service.AuthService; 
+import com.example.demo.service.UserProfileService; 
+import org.springframework.security.authentication.AuthenticationManager; 
+import 
+org.springframework.security.authentication.UsernamePasswordAuthenticationToken; 
+import org.springframework.security.core.Authentication; 
+import org.springframework.stereotype.Service; 
+import org.springframework.transaction.annotation.Transactional; 
+import java.util.UUID; 
+@Service 
+@Transactional 
+public class AuthServiceImpl implements AuthService { 
+private final UserProfileService userService; 
+private final UserProfileRepository userProfileRepository; 
+private final AuthenticationManager authenticationManager; 
+private final JwtUtil jwtUtil; 
+    // EXACT constructor order as per Technical Constraints Step 0 
+    public AuthServiceImpl( 
+            UserProfileService userService, 
+            UserProfileRepository userProfileRepository, 
+            AuthenticationManager authenticationManager, 
+            JwtUtil jwtUtil) { 
+        this.userService = userService; 
+        this.userProfileRepository = userProfileRepository; 
+        this.authenticationManager = authenticationManager; 
+        this.jwtUtil = jwtUtil; 
+    } 
+ 
+    @Override 
+    public JwtResponse register(RegisterRequest req) { 
+        if (userProfileRepository.existsByEmail(req.getEmail())) { 
+            throw new BadRequestException("Event code already exists"); 
+        } 
+         
+        UserProfile user = new UserProfile(); 
+        user.setFullName(req.getFullName()); 
+        user.setEmail(req.getEmail()); 
+        user.setPassword(req.getPassword()); 
+        user.setRole(req.getRole() != null ? req.getRole() : "USER"); 
+         
+        // Use userId from request if available, otherwise generate one 
+        String userIdValue = (req.getUserId() != null && !req.getUserId().isEmpty())  
+                             ? req.getUserId()  
+                             : UUID.randomUUID().toString(); 
+         
+        if (userProfileRepository.existsByUserId(userIdValue)) { 
+            throw new BadRequestException("User ID already exists"); 
+        } 
+        user.setUserId(userIdValue); 
+        user.setActive(true); 
+ 
+        UserProfile savedUser = userService.createUser(user); 
+ 
+        String token = jwtUtil.generateToken(savedUser.getId(), savedUser.getEmail(), 
+savedUser.getRole()); 
+        return new JwtResponse(token, savedUser.getId(), savedUser.getEmail(), 
+savedUser.getRole()); 
+    } 
+ 
+    @Override 
+    public JwtResponse login(LoginRequest req) { 
+        Authentication auth = authenticationManager.authenticate( 
+                new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword()) 
+        ); 
+ 
+        UserProfile user = userProfileRepository.findByEmail(req.getEmail()) 
+                .orElseThrow(() -> new BadRequestException("User not found")); 
+ 
+        if (user.getActive() != null && !user.getActive()) { 
+            throw new BadRequestException("User account is inactive"); 
+        } 
+ 
+        String token = jwtUtil.generateToken(user.getId(), user.getEmail(), user.getRole()); 
+return new JwtResponse(token, user.getId(), user.getEmail(), user.getRole()); 
+} 
 }
