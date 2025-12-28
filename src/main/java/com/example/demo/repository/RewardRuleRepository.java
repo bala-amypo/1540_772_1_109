@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List; 
 public interface RewardRuleRepository extends JpaRepository<RewardRule, Long> { 
 List<RewardRule> findByActiveTrue(); 
-@Query("SELECT r FROM RewardRule r WHERE r.cardId = ?1 AND r.category = ?2 AND 
-r.active = true") 
+@Query("SELECT r FROM RewardRule r WHERE r.cardId = ?1 AND r.category = ?2 AND r.active = true") 
 List<RewardRule> findActiveRulesForCardCategory(Long cardId, String category); 
 }
