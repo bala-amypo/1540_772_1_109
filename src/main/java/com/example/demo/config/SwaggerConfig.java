@@ -24,7 +24,7 @@ public class SwaggerConfig {
 endpoint to get a token.")) 
                 .servers(List.of( 
                         new 
-Server().url("https://9074.pro604cr.amypo.ai").description("Development Server") 
+Server().url("https://9064.pro604cr.amypo.ai/").description("Development Server") 
                 )) 
                 // This applies security to EVERY endpoint in the UI 
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName)) 
