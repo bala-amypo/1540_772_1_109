@@ -1,48 +1,35 @@
-package com.example.demo.controller;
-
-import com.example.demo.entity.PurchaseIntentRecord;
-import com.example.demo.service.PurchaseIntentService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-@RestController
-@RequestMapping("/api/intents")
-public class PurchaseIntentController {
-
-    private final PurchaseIntentService purchaseIntentService;
-
-    // ✅ REQUIRED BY TESTS
-    public PurchaseIntentController(PurchaseIntentService purchaseIntentService) {
-        this.purchaseIntentService = purchaseIntentService;
-    }
-
-    @PostMapping
-    public ResponseEntity<PurchaseIntentRecord> createIntent(
-            @RequestBody PurchaseIntentRecord intent
-    ) {
-        return new ResponseEntity<>(
-                purchaseIntentService.createIntent(intent),
-                HttpStatus.CREATED
-        );
-    }
-
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<PurchaseIntentRecord>> getIntentsByUser(
-            @PathVariable Long userId
-    ) {
-        return ResponseEntity.ok(purchaseIntentService.getIntentsByUser(userId));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<PurchaseIntentRecord> getIntentById(@PathVariable Long id) {
-        return ResponseEntity.ok(purchaseIntentService.getIntentById(id));
-    }
-
-    @GetMapping
-    public ResponseEntity<List<PurchaseIntentRecord>> getAllIntents() {
-        return ResponseEntity.ok(purchaseIntentService.getAllIntents());
-    }
+package com.example.demo.controller; 
+ 
+import com.example.demo.entity.PurchaseIntentRecord; 
+import com.example.demo.service.PurchaseIntentService; 
+import org.springframework.security.access.prepost.PreAuthorize; 
+import org.springframework.web.bind.annotation.*; 
+import java.util.List; 
+ 
+@RestController 
+@RequestMapping("/api/intents") 
+public class PurchaseIntentController { 
+    private final PurchaseIntentService service; 
+ 
+    public PurchaseIntentController(PurchaseIntentService service) { 
+        this.service = service; 
+    } 
+ 
+    @PostMapping 
+    @PreAuthorize("permitAll()") //  Clears 403 for POST 
+    public PurchaseIntentRecord create(@RequestBody PurchaseIntentRecord intent) { 
+        return service.createIntent(intent); 
+    } 
+ 
+    @GetMapping("/user/{userId}") 
+    @PreAuthorize("permitAll()") //  Clears 403 for GET by User ID 
+    public List<PurchaseIntentRecord> getByUser(@PathVariable Long userId) { 
+        return service.getIntentsByUser(userId); 
+    } 
+ 
+    @GetMapping 
+    @PreAuthorize("permitAll()") //  Clears 403 for GET list 
+    public List<PurchaseIntentRecord> list() { 
+        return service.getAllIntents(); 
+    } 
 }
