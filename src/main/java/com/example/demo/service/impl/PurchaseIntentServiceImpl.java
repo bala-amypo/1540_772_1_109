@@ -17,8 +17,7 @@ repo.save(intent); }
 public List<PurchaseIntentRecord> getIntentsByUser(Long userId) { return 
 repo.findByUserId(userId); } 
 public PurchaseIntentRecord getIntentById(Long id) { 
-return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Intent 
-not found")); 
+return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Intent not found")); 
 } 
 public List<PurchaseIntentRecord> getAllIntents() { return repo.findAll(); } 
 }

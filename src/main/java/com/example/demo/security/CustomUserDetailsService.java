@@ -19,8 +19,7 @@ this.userRepository = userRepository;
     public UserDetails loadUserByUsername(String email) throws 
 UsernameNotFoundException { 
         UserProfile user = userRepository.findByEmail(email) 
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with 
-email: " + email)); 
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email)); 
  
         // Maps "USER" to "ROLE_USER" as required by Spring Security standards 
         return new User( 

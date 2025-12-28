@@ -24,10 +24,8 @@ encoder) {
  
     @Override 
     public UserProfile createUser(UserProfile p) { 
-        if (repo.existsByEmail(p.getEmail())) throw new BadRequestException("Email 
-already exists"); 
-        if (repo.existsByUserId(p.getUserId())) throw new BadRequestException("User ID 
-already exists"); 
+        if (repo.existsByEmail(p.getEmail())) throw new BadRequestException("Email already exists"); 
+        if (repo.existsByUserId(p.getUserId())) throw new BadRequestException("User ID already exists"); 
          
         p.setPassword(encoder.encode(p.getPassword())); 
         if (p.getActive() == null) p.setActive(true); 
@@ -36,8 +34,7 @@ already exists");
  
     @Override 
     public UserProfile getUserById(Long id) { 
-        return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User 
-not found")); 
+        return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found")); 
     } 
  
     @Override 
